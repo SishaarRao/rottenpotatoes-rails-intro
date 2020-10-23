@@ -15,7 +15,7 @@ class MoviesController < ApplicationController
     elsif not params[:ratings] and not params[:commit] and session[:ratings]
       @ratings_to_show = session[:ratings]
     else
-      @ratings_to_show = []
+      @ratings_to_show = @all_ratings
       session[:ratings] = nil
     end
 
