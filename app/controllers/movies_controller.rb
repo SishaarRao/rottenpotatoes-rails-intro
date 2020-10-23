@@ -15,6 +15,17 @@ class MoviesController < ApplicationController
       @ratings_to_show = []
       @movies = Movie.all
     end
+    
+    if params[:sort]
+      @movies = @movies.order(params[:sort])
+      if params[:sort] == "title"
+        @title_class = "hilite bg-warning"
+        @release_date_class = ""
+      else
+        @title_class = ""
+        @release_date_class = "hilite bg-warning"
+      end
+    end
   end
 
   def new
