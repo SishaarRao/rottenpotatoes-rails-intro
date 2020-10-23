@@ -36,7 +36,7 @@ class MoviesController < ApplicationController
       @movies = Movie.with_ratings(@ratings_to_show)
     end
     
-    if not @sort_key.nil?
+    if @sort_key
       @movies = @movies.order(@sort_key)
       @title_class = params[:sort] == "title" ? "hilite bg-warning" : "hilite"
       @release_date_class = params[:sort] == "release_date" ? "hilite bg-warning" : "hilite"
