@@ -11,20 +11,24 @@ class MoviesController < ApplicationController
     if params[:ratings]
       @ratings_to_show = params[:ratings].keys
       @movies = Movie.with_ratings(params[:ratings].keys)
-    elsif
+      
+      session[:ratings] = @ratings_to_show
+    elsif not params[:ratings] and not params[:commit] and session[:ratings]
+      @ratings_to_show = session[:ratings]
+      @movies = Movie.with_ratings(session[:ratings])
+#     elsif not params[:ratings] and not params[:commit]
+    else
       @ratings_to_show = []
       @movies = Movie.all
     end
     
     if params[:sort]
       @movies = @movies.order(params[:sort])
-      if params[:sort] == "title"
-        @title_class = "hilite bg-warning"
-        @release_date_class = ""
-      else
-        @title_class = ""
-        @release_date_class = "hilite bg-warning"
-      end
+      
+      session[:sort] = params[:sort]
+      
+      @title_class = params[:sort] == "title" ? "hilite bg-warning" : "hilite"
+      @release_date_class = params[:sort] == "release_date" ? "hilite bg-warning" : "hilite"
     end
   end
 
