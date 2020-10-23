@@ -8,25 +8,36 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
+
     if params[:ratings]
       @ratings_to_show = params[:ratings].keys
-      @movies = Movie.with_ratings(params[:ratings].keys)
-      
       session[:ratings] = @ratings_to_show
     elsif not params[:ratings] and not params[:commit] and session[:ratings]
       @ratings_to_show = session[:ratings]
-      @movies = Movie.with_ratings(session[:ratings])
-#     elsif not params[:ratings] and not params[:commit]
     else
       @ratings_to_show = []
-      @movies = Movie.all
+      session[:ratings] = nil
+    end
+
+    if params[:sort]
+      @sort_key = params[:sort]
+      session[:sort] = @sort_key
+    elsif not params[:sort] and session[:sort]
+      @sort_key = session[:sort]
+      params[:sort] = @sort_key
+    else
+      @sort_key = nil
+      session[:sort] = nil
     end
     
-    if params[:sort]
-      @movies = @movies.order(params[:sort])
-      
-      session[:sort] = params[:sort]
-      
+    if @ratings_to_show == []
+      @movies = Movie.all 
+    else
+      @movies = Movie.with_ratings(@ratings_to_show)
+    end
+    
+    if not @sort_key.nil?
+      @movies = @movies.order(@sort_key)
       @title_class = params[:sort] == "title" ? "hilite bg-warning" : "hilite"
       @release_date_class = params[:sort] == "release_date" ? "hilite bg-warning" : "hilite"
     end
